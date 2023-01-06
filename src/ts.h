@@ -7,7 +7,6 @@
 #define _EMBUI_TS_H
 
 // Task Scheduler lib   https://github.com/arkhipenko/TaskScheduler
-#define _TASK_SLEEP_ON_IDLE_RUN
 #define _TASK_STD_FUNCTION   // Compile with support for std::function.
 #define _TASK_SCHEDULING_OPTIONS
 #include <TaskSchedulerDeclarations.h>
