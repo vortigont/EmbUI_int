@@ -3,7 +3,7 @@
     "frameworks": "arduino",
     "keywords": "embui, arduino, framework, esp8266, esp32",
     "description": "Embeded Web UI framework for esp8266/esp32/esp32-c3/esp32-s2/esp32-s3 IoT prototyping",
-    "url": "https://github.com/DmytroKorniienko/EmbUI",
+    "url": "https://github.com/vortigont/EmbUI_int/",
     "authors": [
         {
             "name": "Dmytro Korniienko",
@@ -23,7 +23,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/DmytroKorniienko/EmbUI.git"
+        "url": "https://github.com/vortigont/EmbUI_int.git"
     },
     "platforms": ["espressif8266", "espressif32"],
     "version": "2.7.0",
@@ -32,8 +32,8 @@
         {"owner": "bblanchon",
          "name": "ArduinoJson",
          "version": "*"},
-        {"name": "AsyncWebServer-mod",
-         "version": "https://github.com/vortigont/ESPAsyncWebServer/#hotfixes"},
+        {"name": "AsyncWebServer",
+         "version": "https://github.com/vortigont/ESPAsyncWebServer#hotfixes"},
         {"owner": "marvinroger",
          "name": "AsyncMqttClient",
          "version": "*"},
