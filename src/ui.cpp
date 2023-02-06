@@ -97,14 +97,9 @@ void Interface::select(const String &id, const String &value, const String &labe
     if (!frame_add_safe(obj.as<JsonObject>()))
         return;
     
-    section_stack.end()->idx--;
-    uint8_t idx = section_stack.end()->idx;
-    // после того как было дробление фрейма, индекс может не соответствовать!!!
-    while (idx && !section_stack.end()->block[idx]){
-        idx--;
-    }
-
-    json_section_begin(FPSTR(P_options), "", false, false, false, section_stack.end()->block[idx]);
+    section_stack.tail()->idx--;
+    // open new nested section
+    json_section_begin(FPSTR(P_options), "", false, false, false, section_stack.tail()->block[section_stack.tail()->block.size()-1]);
 }
 
 /**
@@ -439,9 +434,9 @@ bool Interface::json_frame_add(JsonObjectConst obj) {
 
     LOG(printf_P, PSTR("UI: Frame add obj %u b, storage %d/%d"), obj.memoryUsage(), json.memoryUsage(), json.capacity());
 
-    if (json.capacity() - json.memoryUsage() > obj.memoryUsage() + 16 && section_stack.end()->block.add(obj)) {
-        section_stack.end()->idx++;
-        LOG(printf_P, PSTR("...OK [%u]\tMEM: %u\n"), section_stack.end()->idx, ESP.getFreeHeap());
+    if (json.capacity() - json.memoryUsage() > obj.memoryUsage() + 16 && section_stack.tail()->block.add(obj)) {
+        section_stack.tail()->idx++;
+        LOG(printf_P, PSTR("...OK [%u]\tMEM: %u\n"), section_stack.tail()->idx, ESP.getFreeHeap());
         return true;
     }
     LOG(printf_P, PSTR(" - Frame full! Heap: %u\n"), ESP.getFreeHeap());
@@ -518,7 +513,7 @@ void Interface::json_section_hidden(const String &name, const String &label){
 void Interface::json_section_begin(const String &name, const String &label, bool main, bool hidden, bool line){
     JsonObject obj;
     if (section_stack.size()) {
-        obj = section_stack.end()->block.createNestedObject();
+        obj = section_stack.tail()->block.createNestedObject();
     } else {
         obj = json.as<JsonObject>();
     }
@@ -548,7 +543,7 @@ void Interface::json_section_end(){
 
     section_stack_t *section = section_stack.pop();
     if (section_stack.size()) {
-        section_stack.end()->idx++;
+        section_stack.tail()->idx++;
     }
     LOG(printf_P, PSTR("UI: section end %s [%u] MEM: %u\n"), section->name.c_str(), section_stack.size(), ESP.getFreeHeap());
     delete section;

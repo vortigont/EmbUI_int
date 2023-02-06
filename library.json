@@ -51,7 +51,10 @@
          "platforms": "espressif8266"},
         {"owner": "charno",
          "name": "FTPClientServer",
-         "version": "https://github.com/charno/FTPClientServer"}
+         "version": "https://github.com/dplasa/FTPClientServer"},
+        {"owner": "vortigont",
+         "name": "LinkedList",
+         "version": "https://github.com/vortigont/LinkedList"}
     ],
     "build": {
         "flags": [
