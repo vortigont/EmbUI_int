@@ -49,7 +49,7 @@
         {"name": "ESPAsyncUDP",
          "version": "https://github.com/DmytroKorniienko/ESPAsyncUDP",
          "platforms": "espressif8266"},
-        {"owner": "charno",
+        {"owner": "dplasa",
          "name": "FTPClientServer",
          "version": "https://github.com/dplasa/FTPClientServer"},
         {"owner": "vortigont",
