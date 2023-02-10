@@ -17,7 +17,7 @@
 #endif
 #elif defined ESP32
 #ifndef EMBUI_IFACE_DYN_JSON_SIZE
-  #define EMBUI_IFACE_DYN_JSON_SIZE 8192
+  #define EMBUI_IFACE_DYN_JSON_SIZE 4096
 #endif
 #ifndef EMBUI_SMALL_JSON_SIZE
   #define EMBUI_SMALL_JSON_SIZE  1024
