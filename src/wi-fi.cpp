@@ -125,11 +125,13 @@ void EmbUI::WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
             LOG(println, F("UI WiFi: Switch to AP-Station mode"));
         }
 
-        embuischedw = new Task(EMBUI_WIFI_RECONNECT_TIMER * TASK_SECOND, TASK_ONCE,
-                [this](){ wifi_setmode(WIFI_AP_STA); WiFi.begin(); TASK_RECYCLE; embuischedw = nullptr; },
-                &ts, false
-            );
-        embuischedw->enableDelayed();
+        if (!embuischedw){
+            embuischedw = new Task(EMBUI_WIFI_RECONNECT_TIMER * TASK_SECOND, TASK_ONCE,
+                    [this](){ wifi_setmode(WIFI_AP_STA); WiFi.begin(); embuischedw = nullptr; },
+                    &ts, false, nullptr, nullptr, true
+                );
+            embuischedw->enableDelayed();
+        }
 
         sysData.wifi_sta = false;
         if(_cb_STADisconnected)
