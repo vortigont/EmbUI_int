@@ -42,12 +42,12 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
         LOG(printf_P, PSTR("UI: ws[%s][%u] connect MEM: %u\n"), server->url(), client->id(), ESP.getFreeHeap());
 
         EmbUI::GetInstance()->sysData.isWSConnect = true; // на 5 секунд устанавливаем флаг
-        Task *_t = new Task(TASK_SECOND * 5, TASK_ONCE, nullptr, &ts, false, nullptr, [](){TASK_RECYCLE; EmbUI::GetInstance()->sysData.isWSConnect = false;});
+        Task *_t = new Task(TASK_SECOND * 5, TASK_ONCE, nullptr, &ts, false, nullptr, [](){EmbUI::GetInstance()->sysData.isWSConnect = false;}, true);
         _t->enableDelayed();
 
         Interface *interf = new Interface(EmbUI::GetInstance(), client);
         section_main_frame(interf, nullptr);
-        Task *_t1 = new Task(TASK_SECOND, TASK_ONCE, nullptr, &ts, false, nullptr, [](){EmbUI::GetInstance()->send_pub(); TASK_RECYCLE;});
+        Task *_t1 = new Task(TASK_SECOND, TASK_ONCE, nullptr, &ts, false, nullptr, [](){EmbUI::GetInstance()->send_pub();}, true);
         _t1->enableDelayed();
         delete interf;
 
@@ -610,15 +610,18 @@ void EmbUI::create_sysvars(){
  * 0 - will disable periodic task
  */
 void EmbUI::setPubInterval(uint16_t _t){
-    if(tValPublisher)
-        tValPublisher->cancel(); // cancel & delete
-
-    if (_t){
-        #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
-            HeapSelectIram ephemeral;
-        #endif
-        tValPublisher = new Task(_t * TASK_SECOND, TASK_FOREVER, [this](){ if(ws.count()) send_pub(); }, &ts, true, nullptr, [this](){TASK_RECYCLE; tValPublisher=nullptr;});
+    if (!_t){
+        delete tValPublisher;
+        tValPublisher = nullptr;
+        return;
     }
+
+    if(tValPublisher){
+        tValPublisher->setInterval(_t);
+        return;
+    }
+
+    tValPublisher = new Task(_t * TASK_SECOND, TASK_FOREVER, [this](){ if(ws.count()) send_pub(); }, &ts, true);
 }
 
 /**

@@ -313,7 +313,7 @@ void TimeProcessor::httprefreshtimer(const uint32_t delay){
         #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
             HeapSelectIram ephemeral;
         #endif
-        _httpTask = new Task(timer * TASK_SECOND, TASK_ONCE, nullptr, &ts, false, nullptr, [this](){getTimeHTTP(); TASK_RECYCLE; _httpTask=nullptr;});
+        _httpTask = new Task(timer * TASK_SECOND, TASK_ONCE, nullptr, &ts, false, nullptr, [this](){getTimeHTTP(); _httpTask=nullptr;}, true);
     }
     _httpTask->restartDelayed();
 }
@@ -353,9 +353,8 @@ void TimeProcessor::ntpReSync(){
                         LOG(printf_P,PSTR("TIME: Get time from RTC (%lu)-> %s\n"), (unsigned long)shift, dt.c_str());
                     }
                     _ntpTask = nullptr;
-                    TASK_RECYCLE;
                 }
-            });
+            }, true);
             _ntpTask->enableDelayed();
         } else {
             _ntpTask->restartDelayed();

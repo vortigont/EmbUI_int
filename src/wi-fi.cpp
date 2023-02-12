@@ -49,12 +49,9 @@ void EmbUI::onSTADisconnected(WiFiEventStationModeDisconnected event_info)
         LOG(println, F("UI WiFi: switching to internal AP"));
         wifi_setmode(WIFI_AP);
     }
-    #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
-        HeapSelectIram ephemeral;
-    #endif
     embuischedw = new Task(EMBUI_WIFI_RECONNECT_TIMER * TASK_SECOND, TASK_ONCE,
-            [this](){ wifi_setmode(WIFI_AP_STA); WiFi.begin(); TASK_RECYCLE; embuischedw = nullptr; },
-            &ts, false
+            [this](){ wifi_setmode(WIFI_AP_STA); WiFi.begin(); embuischedw = nullptr; },
+            &ts, false, nullptr, nullptr, true
         );
     embuischedw->enableDelayed();
 
@@ -229,15 +226,12 @@ void EmbUI::wifi_connect(const String &ssid, const String &pwd)
                         //WiFi.setAutoConnect(true);
                     #endif
                     WiFi.begin(_ssid.c_str(), _pwd.c_str());
-                    TASK_RECYCLE; embuischedw = nullptr;
-            }, &ts, false);
+                    embuischedw = nullptr;
+            }, &ts, false, nullptr, nullptr, true);
     } else {
-        #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
-            HeapSelectIram ephemeral;
-        #endif
         embuischedw = new Task(EMBUI_WIFI_BEGIN_DELAY * TASK_SECOND, TASK_ONCE,
-                [this](){ WiFi.begin(); TASK_RECYCLE; embuischedw = nullptr; },
-                &ts, false
+                [this](){ WiFi.begin(); embuischedw = nullptr; },
+                &ts, false, nullptr, nullptr, true
             );
     }
     embuischedw->enableDelayed();

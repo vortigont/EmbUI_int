@@ -279,9 +279,6 @@ void BasicUI::set_scan_wifi(Interface *interf, JsonObject *data){
         interf->json_section_end();
         interf->json_frame_flush();
 
-        #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
-            HeapSelectIram ephemeral;
-        #endif
         Task *t = new Task(300, TASK_ONCE, nullptr, &ts, false, nullptr, [](){
             EmbUI::GetInstance()->sysData.isWiFiScanning = true;
             #ifdef ESP8266
@@ -291,8 +288,7 @@ void BasicUI::set_scan_wifi(Interface *interf, JsonObject *data){
             EmbUI::GetInstance()->setWiFiScanCB(&scan_complete);
             WiFi.scanNetworks(true);         // У ESP нет метода с коллбеком, поэтому просто сканируем
             #endif
-            TASK_RECYCLE;
-        });
+        }, true);
         t->enableDelayed();
     }
 }
