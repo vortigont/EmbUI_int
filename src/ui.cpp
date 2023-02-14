@@ -450,7 +450,7 @@ void Interface::json_frame_next(){
     json.clear();
     json.garbageCollect();
     JsonObject obj = json.to<JsonObject>();
-    for (int i = 0; i < section_stack.size(); i++) {
+    for (unsigned i = 0; i < section_stack.size(); i++) {
         if (i) obj = section_stack[i - 1]->block.createNestedObject();
         obj[FPSTR(P_section)] = section_stack[i]->name;
         obj[F("idx")] = section_stack[i]->idx;
@@ -553,8 +553,16 @@ void Interface::json_section_end(){
  * @brief - serialize and send json obj directly to the ws buffer
  */
 void frameSendAll::send(const JsonObject& data){
-    String buffer;
-    serializeJson(data, buffer);
+    size_t length = measureJson(data);
+    auto buffer = ws->makeBuffer(length);
+    if (!buffer)
+        return;
+
+#ifndef YUBOXMOD
+    serializeJson(data, (char*)buffer->get(), length);
+#else
+    serializeJson(data, (char*)buffer->data() , length);
+#endif
 
     ws->textAll(buffer);
 };
@@ -563,9 +571,16 @@ void frameSendAll::send(const JsonObject& data){
  * @brief - serialize and send json obj directly to the ws buffer
  */
 void frameSendClient::send(const JsonObject& data){
-    String buffer;
-    serializeJson(data, buffer);
+    size_t length = measureJson(data);
+    auto buffer = cl->server()->makeBuffer(length);
+    if (!buffer)
+        return;
 
+#ifndef YUBOXMOD
+    serializeJson(data, (char*)buffer->get(), length);
+#else
+    serializeJson(data, (char*)buffer->data(), length);
+#endif
     cl->text(buffer);
 }
 

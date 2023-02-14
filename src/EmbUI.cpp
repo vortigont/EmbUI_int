@@ -420,7 +420,7 @@ void EmbUI::post(JsonObject &data){
 
     for (JsonPair kv : data) {
         const char *kname = kv.key().c_str();
-        for (int i = 0; !section && i < section_handle.size(); i++) {
+        for (unsigned i = 0; !section && i < section_handle.size(); i++) {
             const char *sname = section_handle[i]->name.c_str();
             const char *mall = strchr(sname, '*');
             unsigned len = mall? mall - sname - 1 : strlen(kname);
@@ -453,7 +453,7 @@ void EmbUI::send_pub(){
 
 void EmbUI::section_handle_remove(const String &name)
 {
-    for(int i=0; i<section_handle.size(); i++){
+    for(unsigned i=0; i<section_handle.size(); i++){
         if(section_handle.get(i)->name==name){
             delete section_handle.get(i);
             section_handle.remove(i);
