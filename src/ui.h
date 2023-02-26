@@ -103,28 +103,17 @@ class Interface {
     bool frame_add_safe(const JsonObjectConst &jobj);
 
     public:
-        Interface(EmbUI *j, AsyncWebSocket *server, size_t size = EMBUI_IFACE_DYN_JSON_SIZE): json(size), section_stack(){
-            _embui = j;
-            #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
-                HeapSelectDram ephemeral; // force DRAM
-            #endif
+        Interface(EmbUI *j, AsyncWebSocket *server, size_t size = EMBUI_IFACE_DYN_JSON_SIZE): _embui(j), json(size) {
             send_hndl = new frameSendAll(server);
         }
-        Interface(EmbUI *j, AsyncWebSocketClient *client, size_t size = EMBUI_IFACE_DYN_JSON_SIZE): json(size), section_stack(){
-            _embui = j;
-            #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
-                HeapSelectDram ephemeral; // force DRAM
-            #endif
+        Interface(EmbUI *j, AsyncWebSocketClient *client, size_t size = EMBUI_IFACE_DYN_JSON_SIZE): _embui(j), json(size) {
             send_hndl = new frameSendClient(client);
         }
-        Interface(EmbUI *j, AsyncWebServerRequest *request, size_t size = EMBUI_IFACE_DYN_JSON_SIZE): json(size), section_stack(){
-            _embui = j;
-            #if defined(PIO_FRAMEWORK_ARDUINO_MMU_CACHE16_IRAM48_SECHEAP_SHARED) && defined(EMBUI_USE_SECHEAP)
-                HeapSelectDram ephemeral; // force DRAM
-            #endif
+        Interface(EmbUI *j, AsyncWebServerRequest *request, size_t size = EMBUI_IFACE_DYN_JSON_SIZE): _embui(j), json(size) {
             send_hndl = new frameSendHttp(request);
         }
         ~Interface(){
+            json_frame_clear();
             delete send_hndl;
             send_hndl = nullptr;
             _embui = nullptr;

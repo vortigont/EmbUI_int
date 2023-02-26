@@ -461,10 +461,9 @@ void Interface::json_frame_next(){
 }
 
 void Interface::json_frame_clear(){
-    while(section_stack.size()) {
-        section_stack_t *section = section_stack.shift();
-        delete section;
-    }
+    while(section_stack.size())
+        delete section_stack.shift();
+
     json.clear();
 }
 
