@@ -92,10 +92,11 @@ class Interface {
       int idx;
     } section_stack_t;
 
+    EmbUI *_embui;
     DynamicJsonDocument json;
     LList<section_stack_t*> section_stack;
     frameSend *send_hndl;
-    EmbUI *_embui;
+
 
     /**
      * @brief - add object to frame with mem overflow protection 
