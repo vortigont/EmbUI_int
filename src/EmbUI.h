@@ -364,7 +364,11 @@ class EmbUI
 
     void section_handle_add(const String &btn, buttonCallback response);
     void section_handle_remove(const String &name);
-    const char* param(const char* key);
+    /*
+     disable this overload for the sake of compatibility with esp8266,
+     esp32 casts PGM/__FlashStringHelper to char*, I use paramVariant() in my EmbUI fork, here need to force Stringify everything
+    */
+    //const char* param(const char* key);
     String param(const String &key);
     bool isparamexists(const char* key){ return cfg.containsKey(key);}
     bool isparamexists(const String &key){ return cfg.containsKey(key);}

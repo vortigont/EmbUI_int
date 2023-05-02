@@ -481,6 +481,7 @@ void EmbUI::section_handle_add(const String &name, buttonCallback response)
  * В случае отсутствующего параметра возвращает пустой указатель
  * (метод оставлен для совместимости)
  */
+/*
 const char* EmbUI::param(const char* key)
 {
     LOG(printf_P, PSTR("UI READ KEY: '%s'"), key);
@@ -493,6 +494,7 @@ const char* EmbUI::param(const char* key)
     }
     return value;
 }
+*/
 
 /**
  * обертка над param в виде String
