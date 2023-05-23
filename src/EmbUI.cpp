@@ -378,7 +378,7 @@ void EmbUI::begin(){
 
     // server all files from LittleFS root
     server.serveStatic("/", LittleFS, "/")
-        .setDefaultFile(PSTR("index.html"));
+        .setDefaultFile(PSTR("index.html"))
         .setCacheControl(PSTR("max-age=10, must-revalidate"));	// rely on IMS header for static caching
 
     server.onNotFound(notFound);
