@@ -31,7 +31,7 @@
     [
         {"owner": "bblanchon",
          "name": "ArduinoJson",
-         "version": "*"},
+         "version": "~6.21"},
         {"name": "AsyncWebServer",
          "version": "https://github.com/vortigont/ESPAsyncWebServer#hotfixes"},
         {"owner": "marvinroger",
